@@ -36,11 +36,11 @@ Page.setMsgListByAuthors = function(list) {
     msgListByAuthors = list;
 }
 
-Page.showInMsgWindow = function(html) {
-    console.log('showInMsgWindow');
+Page.insertHTMLById = function(id, html) {
+    console.log('insertHTMLById');
 
 
-    var msgWindow = document.getElementById('msg-window');
+    var msgWindow = document.getElementById(id);
     msgWindow.innerHTML = html;
 }
 
@@ -96,7 +96,7 @@ Page.getAccountMsgHistory = function() {
         var until_date = new Date();
         until_date.setHours(until_date.getHours() - parseInt(interval, 10));
 
-        Page.showInMsgWindow('~');
+        Page.insertHTMLById('msg-window', '~');
 
         var total = Page.getApi().api.getAccountHistory(user, -1, 0, function(err, result) {
             console.log('getAccountHistory',user);
@@ -145,47 +145,69 @@ Page.getAccountMsgHistoryByPart = function (user, from, limit, list, until_date)
         }
 
         if (!isStop) {
-            Page.showInMsgWindow('found conversations '  + Object.keys(list).length + ' ~');
+            Page.insertHTMLById('msg-window', 'found conversations '  + Object.keys(list).length + ' ~');
             Page.getAccountMsgHistoryByPart(user, from - limit, limit, list, until_date);
         } else {
-            Page.showInMsgWindow('found conversations '  + Object.keys(list).length + ' ~');
+            var users = Object.keys(list);
+            Page.insertHTMLById('msg-window', 'found conversations '  + users.length + ' ~');
             console.log('list', list);
-            Page.showChat();
+            Page.initChatWindow();
+            if (users.length) {
+                Page.showChatsWithUsers();
+                Page.showChatOfUser(users[0]);
+            }
         }
     });
 }
 
-Page.showChat = function() {
-    console.log('showChat');
+Page.initChatWindow = function() {
+    console.log('initChatWindow');
+
+    html = '<table height="100px" width="200px">' +
+                '<tr>' +
+                    '<td id="msg-window-users-list" valign="top"></td>' +
+                    '<td id="msg-window-chat" valign="bottom"></td>' +
+                '</tr>' +
+        '</table>';
+
+    Page.insertHTMLById('msg-window', html);
+}
+
+Page.showChatOfUser = function(user) {
+    console.log('showChatOfUser');
+
+    var list = Page.getMsgListByAuthors();
+    var owner = document.getElementById('msg-from').value;
+    var chat = '';
+    list[user].reverse();
+    for (var j = 0; j < list[user].length; j++) {
+        var cl = '';
+        if (list[user][j]['op'][1]['from'] !== owner) {
+            cl = 'in';
+        } else {
+            cl = 'out';
+        }
+        var msg = list[user][j]['op'][1]['memo'] === '' ? '(empty)' : list[user][j]['op'][1]['memo'];
+        chat += '<div class="msg-window-chat-' + cl + '">' + msg + '</div> ';
+    }
+
+    Page.insertHTMLById('msg-window-chat', chat);
+}
+Page.showChatsWithUsers = function() {
+    console.log('showChatsWithUsers');
 
     var list = Page.getMsgListByAuthors();
 
     var users = Object.keys(list);
     var html = '';
     if (users.length) {
-        var user = document.getElementById('msg-from').value;
 
         for (var j = 0; j < users.length; j++) {
             var userName = users[j];
             html += '<br><span class="msg-window-user">' + userName + ' (' + list[userName].length + ')' + '</span> ';
         }
 
-        var chat = '';
-        list[users[0]].reverse();
-        for (var j = 0; j < list[users[0]].length; j++) {
-            var cl = '';
-            if (list[users[0]][j]['op'][1]['from'] !== user) {
-                cl = 'in';
-            } else {
-                cl = 'out';
-            }
-            var msg = list[users[0]][j]['op'][1]['memo'] === '' ? '(empty)' : list[users[0]][j]['op'][1]['memo'];
-            chat += '<div class="msg-window-chat-' + cl + '">' + msg + '</div> ';
-        }
-
-        html = '<table height="100px" width="200px"><tr><td id="msg-window-users-list" valign="top">' + html + '</td><td id="msg-window-chat" valign="bottom">' + chat + '</td></tr></table>';
-
-        Page.showInMsgWindow(html);
+        Page.insertHTMLById('msg-window-users-list', html);
     }
 }
 
