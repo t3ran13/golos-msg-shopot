@@ -2,6 +2,7 @@ function Page() {
     var api = null;
     var rewardPerUser = null;
     var UsersAskedReward = null;
+    var msgListByAuthors = [];
 }
 
 var Page = new Page();
@@ -21,6 +22,26 @@ Page.getApi = function() {
     console.log('getApi');
 
     return api;
+}
+
+Page.getMsgListByAuthors = function() {
+    console.log('msgListByAuthors');
+
+    return msgListByAuthors;
+}
+
+Page.setMsgListByAuthors = function(list) {
+    console.log('msgListByAuthors');
+
+    msgListByAuthors = list;
+}
+
+Page.showInMsgWindow = function(html) {
+    console.log('showInMsgWindow');
+
+
+    var msgWindow = document.getElementById('msg-window');
+    msgWindow.innerHTML = html;
 }
 
 // Page.setUsersAskedReward = function(list) {
@@ -68,25 +89,110 @@ Page.showPayerBalance = function() {
 Page.getAccountMsgHistory = function() {
     console.log('getAccountMsgHistory');
 
-    var user = document.getElementById('msg-from').value;
-    var interval = document.querySelector('input[name="history-interval"]:checked').value;
-    field.innerHTML = '~';
 
-    Page.getApi().api.getAccounts([user], function(err, result) {
-        console.log('showPayerBalance',user);
+    if (Page.validateIsNotEmpty('msg-from')) {
+        var user = document.getElementById('msg-from').value;
+        var interval = document.querySelector('input[name="history-interval"]:checked').value;
+        var until_date = new Date();
+        until_date.setHours(until_date.getHours() - parseInt(interval, 10));
+
+        Page.showInMsgWindow('~');
+
+        var total = Page.getApi().api.getAccountHistory(user, -1, 0, function(err, result) {
+            console.log('getAccountHistory',user);
+            console.log(err, result);
+            if (err) {
+                alert('error');
+                return [];
+            }
+
+            var total = result[0][0];
+
+            console.log('total', total);
+
+            Page.getAccountMsgHistoryByPart(user, total, 1000, Page.getMsgListByAuthors(), until_date);
+        });
+    }
+}
+
+Page.getAccountMsgHistoryByPart = function (user, from, limit, list, until_date) {
+    console.log('getAccountAllHistory', user, from, limit, list, until_date);
+    return Page.getApi().api.getAccountHistory(user, from, limit, function(err, result) {
         console.log(err, result);
         if (err) {
             alert('error');
             return [];
         }
+        var isStop = false;
+        result.reverse();
+        console.log('result.length', result.length);
+        for (var j = 0; j < result.length; j++) {
+            if (result[j][1]['op'][0] === 'transfer' && new Date(result[j][1]['timestamp']) >= until_date) {
+                var msgUser = null;
+                if (result[j][1]['op'][1]['from'] !== user) {
+                    msgUser = result[j][1]['op'][1]['from'];
+                } else {
+                    msgUser = result[j][1]['op'][1]['to'];
+                }
+                if(!list.hasOwnProperty(msgUser)){
+                    list[msgUser] = [];
+                }
+                list[msgUser].push(result[j][1]);
+            } else if (new Date(result[j][1]['timestamp']) < until_date) {
+                isStop = true;
+                break;
+            }
+        }
 
-        field.innerHTML = result[0].balance + ' and ' + result[0].sbd_balance;
+        if (!isStop) {
+            Page.showInMsgWindow('found conversations '  + Object.keys(list).length + ' ~');
+            Page.getAccountMsgHistoryByPart(user, from - limit, limit, list, until_date);
+        } else {
+            Page.showInMsgWindow('found conversations '  + Object.keys(list).length + ' ~');
+            console.log('list', list);
+            Page.showChat();
+        }
     });
+}
+
+Page.showChat = function() {
+    console.log('showChat');
+
+    var list = Page.getMsgListByAuthors();
+
+    var users = Object.keys(list);
+    var html = '';
+    if (users.length) {
+        var user = document.getElementById('msg-from').value;
+
+        for (var j = 0; j < users.length; j++) {
+            var userName = users[j];
+            html += '<br><span class="msg-window-user">' + userName + ' (' + list[userName].length + ')' + '</span> ';
+        }
+
+        var chat = '';
+        list[users[0]].reverse();
+        for (var j = 0; j < list[users[0]].length; j++) {
+            var cl = '';
+            if (list[users[0]][j]['op'][1]['from'] !== user) {
+                cl = 'in';
+            } else {
+                cl = 'out';
+            }
+            var msg = list[users[0]][j]['op'][1]['memo'] === '' ? '(empty)' : list[users[0]][j]['op'][1]['memo'];
+            chat += '<div class="msg-window-chat-' + cl + '">' + msg + '</div> ';
+        }
+
+        html = '<table height="100px" width="200px"><tr><td id="msg-window-users-list" valign="top">' + html + '</td><td id="msg-window-chat" valign="bottom">' + chat + '</td></tr></table>';
+
+        Page.showInMsgWindow(html);
+    }
 }
 
 console.log('changePlatform');
 document.addEventListener('DOMContentLoaded', function() {
     Page.changePlatform();
+    Page.setMsgListByAuthors([]);
 
     document.getElementById('btn-show-balance').addEventListener('click', function() {
         Page.showPayerBalance();
@@ -371,14 +477,18 @@ document.addEventListener('DOMContentLoaded', function() {
 //     }
 // }
 //
-// Page.validateNotEmpty = function(id) {
-//     console.log('validateNotEmpty');
-//     if (document.getElementById(id).value === '') {
-//         document.getElementById(id).classList.add("error");
-//     } else {
-//         document.getElementById(id).classList.remove("error");
-//     }
-// }
+Page.validateIsNotEmpty = function(id) {
+    console.log('validateNotEmpty');
+    var answer = false;
+    if (document.getElementById(id).value === '') {
+        document.getElementById(id).classList.add("error");
+    } else {
+        document.getElementById(id).classList.remove("error");
+        answer = true;
+    }
+
+    return answer;
+}
 //
 // Page.getUsersFromRating = function (query) {
 //     console.log('getUsersFromRating');

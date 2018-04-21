@@ -27,7 +27,7 @@
             <tr>
                 <td class="title">Ваш ник</td>
                 <td>
-                    <input type="text" class="form-data" id="msg-from">
+                    <input id="msg-from" type="text" class="form-data">
                     <input id="btn-show-balance" type="submit" class="submit-data" value="Показать баланс">
                     <span id="payer-balance"></span>
                 </td>
@@ -63,29 +63,23 @@
                 </td>
             </tr>
             <tr>
-                <td class="title">Кому</td>
-                <td>
-                    <input type="text" class="form-data" id="msg-to" value="Ваше сообщение">
-                </td>
-            </tr>
-            <tr>
-                <td class="title">Сообщение</td>
-                <td>
-                    <input type="text" class="form-data" id="msg" value="Ваше сообщение">
-                </td>
+                <td></td>
+                <td id="msg-window"></td>
             </tr>
             <tr>
                 <td></td>
                 <td>
+                    <input type="text" class="form-data" id="msg-to" placeholder="Имя пользователя">
+                    <input type="text" class="form-data" id="msg" placeholder="Сообщение">
                     <input type="submit" class="submit-data" value="Отправить" onclick="">
                 </td>
             </tr>
             <tr>
                 <td>История</td>
                 <td>
-                    за <input type="radio" name="history-interval" value="24h" checked="checked">24 часа
-                    <input type="radio" name="history-interval" value="1week">неделю
-                    <input type="radio" name="history-interval" value="1month">месяц
+                    за <input type="radio" name="history-interval" value="24" checked="checked">24 часа
+                    <input type="radio" name="history-interval" value="154">неделю
+                    <input type="radio" name="history-interval" value="720">месяц
                     <input id="btn-show-msg-history" type="submit" class="submit-data" value="Показать" onclick="">
                 </td>
             </tr>
