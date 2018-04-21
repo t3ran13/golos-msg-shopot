@@ -88,7 +88,7 @@ Page.showPayerBalance = function() {
 
 Page.getAccountMsgHistory = function() {
     console.log('getAccountMsgHistory');
-
+    var limit = 1000;
 
     if (Page.validateIsNotEmpty('msg-from')) {
         var user = document.getElementById('msg-from').value;
@@ -96,9 +96,9 @@ Page.getAccountMsgHistory = function() {
         var until_date = new Date();
         until_date.setHours(until_date.getHours() - parseInt(interval, 10));
 
-        Page.insertHTMLById('msg-window-chat', '~');
+        Page.insertHTMLById('msg-window-users-list', '~');
 
-        var total = Page.getApi().api.getAccountHistory(user, -1, 0, function(err, result) {
+        Page.getApi().api.getAccountHistory(user, -1, 0, function(err, result) {
             console.log('getAccountHistory',user);
             console.log(err, result);
             if (err) {
@@ -107,10 +107,11 @@ Page.getAccountMsgHistory = function() {
             }
 
             var total = result[0][0];
+            limit = limit > total ? total : limit;
 
             console.log('total', total);
 
-            Page.getAccountMsgHistoryByPart(user, total, 1000, Page.getMsgListByAuthors(), until_date);
+            Page.getAccountMsgHistoryByPart(user, total, limit, Page.getMsgListByAuthors(), until_date);
         });
     }
 }
@@ -144,12 +145,15 @@ Page.getAccountMsgHistoryByPart = function (user, from, limit, list, until_date)
             }
         }
 
-        if (!isStop) {
-            Page.insertHTMLById('msg-window-chat', 'found conversations '  + Object.keys(list).length + ' ~');
+        from = from - limit;
+        limit = limit > from ? from : limit;
+
+        if (!isStop && from > 0) {
+            Page.insertHTMLById('msg-window-users-list', 'found conversations '  + Object.keys(list).length + ' ~');
             Page.getAccountMsgHistoryByPart(user, from - limit, limit, list, until_date);
         } else {
             var users = Object.keys(list);
-            Page.insertHTMLById('msg-window-chat', 'found conversations '  + users.length + ' ~');
+            Page.insertHTMLById('msg-window-users-list', 'found conversations '  + users.length + ' ~');
             console.log('list', list);
             // Page.initChatWindow();
             if (users.length) {
@@ -348,7 +352,7 @@ Page.sendMsg = function() {
         var token = document.querySelector('input[name="msg-token"]:checked').value;
         var fromUser = document.getElementById('msg-from').value;
         var toUser = document.getElementById('msg-to').value;
-        var memo = document.getElementById("msg");
+        var memo = document.getElementById("msg").value;
 
         Page.getApi().broadcast.transfer(activePrivateKey, fromUser, toUser, payerAmount + ' ' + token, memo, function (sendError, sendResult)
         {
