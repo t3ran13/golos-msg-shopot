@@ -196,7 +196,9 @@ Page.showChatOfUser = function(user) {
     }
 
     Page.insertHTMLById('msg-window-chat', chat);
+    Page.addListenerstToUsersFromChat();
 }
+
 Page.showChatsWithUsers = function() {
     console.log('showChatsWithUsers');
 
@@ -208,10 +210,26 @@ Page.showChatsWithUsers = function() {
 
         for (var j = 0; j < users.length; j++) {
             var userName = users[j];
-            html += '<br><span class="msg-window-user">' + userName + ' (' + list[userName].length + ')' + '</span> ';
+            html += '<br><span class="msg-window-user" data-user="' + userName + '">' + userName + ' (' + list[userName].length + ')' + '</span> ';
         }
 
         Page.insertHTMLById('msg-window-users-list', html);
+    }
+}
+
+Page.CheckUserTo = function(e) {
+    console.log('CheckUserTo', e.target.dataset.user);
+
+    Page.showChatOfUser(e.target.dataset.user);
+}
+
+Page.addListenerstToUsersFromChat = function() {
+    var classname = document.getElementsByClassName("msg-window-user");
+
+    for (var i = 0; i < classname.length; i++) {
+        classname[i].addEventListener('click', function(e) {
+            Page.CheckUserTo(e);
+        }, false);
     }
 }
 
@@ -219,6 +237,7 @@ console.log('changePlatform');
 document.addEventListener('DOMContentLoaded', function() {
     Page.changePlatform();
     Page.setMsgListByAuthors([]);
+    Page.addListenerstToUsersFromChat();
 
     document.getElementById('btn-show-balance').addEventListener('click', function() {
         Page.showPayerBalance();
@@ -231,6 +250,8 @@ document.addEventListener('DOMContentLoaded', function() {
     document.getElementById('btn-show-msg-history').addEventListener('click', function() {
         Page.getAccountMsgHistory();
     }, false);
+
+
 
 }, false);
 

@@ -12,4 +12,8 @@
     max-height: 100px;
     overflow: auto;
 }
+.msg-window-user
+{
+    cursor: pointer;
+}
 
