@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <title>Rating Reward</title>
+    <link rel="stylesheet" type="text/css" href="css/popup.css">
     <script src="golos.min.0.6.2.js"></script>
     <script src="popup.js"></script>
     <!--<script src="https://cdn.steemjs.com/lib/latest/steem.min.js"></script>-->
@@ -64,14 +65,21 @@
             </tr>
             <tr>
                 <td></td>
-                <td id="msg-window"></td>
+                <td id="msg-window">
+                    <table width="400px">
+                        <tr>
+                            <td id="msg-window-users-list" valign="top"></td>
+                            <td id="msg-window-chat" width="300px" valign="bottom"></td>
+                        </tr>
+                    </table>
+                </td>
             </tr>
             <tr>
                 <td></td>
                 <td>
                     <input type="text" class="form-data" id="msg-to" placeholder="Имя пользователя">
                     <input type="text" class="form-data" id="msg" placeholder="Сообщение">
-                    <input type="submit" class="submit-data" value="Отправить" onclick="">
+                    <input id="btn-send" type="submit" class="submit-data" value="Отправить" onclick="">
                 </td>
             </tr>
             <tr>

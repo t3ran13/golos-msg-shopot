@@ -37,7 +37,7 @@ Page.setMsgListByAuthors = function(list) {
 }
 
 Page.insertHTMLById = function(id, html) {
-    console.log('insertHTMLById');
+    console.log('insertHTMLById', id);
 
 
     var msgWindow = document.getElementById(id);
@@ -96,7 +96,7 @@ Page.getAccountMsgHistory = function() {
         var until_date = new Date();
         until_date.setHours(until_date.getHours() - parseInt(interval, 10));
 
-        Page.insertHTMLById('msg-window', '~');
+        Page.insertHTMLById('msg-window-chat', '~');
 
         var total = Page.getApi().api.getAccountHistory(user, -1, 0, function(err, result) {
             console.log('getAccountHistory',user);
@@ -145,13 +145,13 @@ Page.getAccountMsgHistoryByPart = function (user, from, limit, list, until_date)
         }
 
         if (!isStop) {
-            Page.insertHTMLById('msg-window', 'found conversations '  + Object.keys(list).length + ' ~');
+            Page.insertHTMLById('msg-window-chat', 'found conversations '  + Object.keys(list).length + ' ~');
             Page.getAccountMsgHistoryByPart(user, from - limit, limit, list, until_date);
         } else {
             var users = Object.keys(list);
-            Page.insertHTMLById('msg-window', 'found conversations '  + users.length + ' ~');
+            Page.insertHTMLById('msg-window-chat', 'found conversations '  + users.length + ' ~');
             console.log('list', list);
-            Page.initChatWindow();
+            // Page.initChatWindow();
             if (users.length) {
                 Page.showChatsWithUsers();
                 Page.showChatOfUser(users[0]);
@@ -188,7 +188,7 @@ Page.showChatOfUser = function(user) {
             cl = 'out';
         }
         var msg = list[user][j]['op'][1]['memo'] === '' ? '(empty)' : list[user][j]['op'][1]['memo'];
-        chat += '<div class="msg-window-chat-' + cl + '">' + msg + '</div> ';
+        chat += '<div class="msg-window-chat-' + cl + '">' + msg + '<hr></div> ';
     }
 
     Page.insertHTMLById('msg-window-chat', chat);
@@ -220,9 +220,14 @@ document.addEventListener('DOMContentLoaded', function() {
         Page.showPayerBalance();
     }, false);
 
+    document.getElementById('btn-send').addEventListener('click', function() {
+        Page.sendMsg();
+    }, false);
+
     document.getElementById('btn-show-msg-history').addEventListener('click', function() {
         Page.getAccountMsgHistory();
     }, false);
+
 }, false);
 
 // Page.changeMoneyDistribution = function() {
@@ -334,29 +339,36 @@ document.addEventListener('DOMContentLoaded', function() {
 //     }
 // }
 
-// Page.rewardUsers = function() {
-//     console.log('rewardUsers');
-//
-//     if (
-//         Page.getPayer() === ''
-//         || document.getElementById('active-private-key').value === ''
-//         || document.getElementById('payer-amount').value === ''
-//     ) {
-//         alert('Заполните все поля/ Fill all fields');
-//         return;
-//     }
-//
-//     var list = document.getElementsByClassName("rewarded-user");
-//     Array.from(list).forEach(function(checkbox) {
-//         if (checkbox.checked) {
-//             Page.rewardUser(checkbox.id);
-//         }
-//     });
-// }
-//
-// Page.getPayer = function() {
-//     return document.getElementById('msg-from').value;
-// }
+Page.sendMsg = function() {
+    console.log('sendMsg');
+
+    if (Page.validateIsNotEmpty(['msg-from', 'msg-to', 'msg', 'active-private-key'])) {
+        var activePrivateKey = document.getElementById('active-private-key').value;
+        var payerAmount = 0.001;
+        var token = document.querySelector('input[name="msg-token"]:checked').value;
+        var fromUser = document.getElementById('msg-from').value;
+        var toUser = document.getElementById('msg-to').value;
+        var memo = document.getElementById("msg");
+
+        Page.getApi().broadcast.transfer(activePrivateKey, fromUser, toUser, payerAmount + ' ' + token, memo, function (sendError, sendResult)
+        {
+            console.log(sendError, sendResult);
+
+            if (sendError != null)
+            {
+                console.log('sendError', sendError);
+                alert('sendError');
+                //td.innerHTML = 'ERROR';
+            }
+            else {
+                alert('sent ' + payerAmount + ' ' + token);
+                //td.innerHTML = 'sent ' + payerAmount + ' ' + token;
+            }
+        });
+    }
+
+}
+
 //
 // Page.rewardUser = function(user) {
 //     console.log('rewardUser');
@@ -499,17 +511,23 @@ document.addEventListener('DOMContentLoaded', function() {
 //     }
 // }
 //
-Page.validateIsNotEmpty = function(id) {
+Page.validateIsNotEmpty = function(ids) {
     console.log('validateNotEmpty');
-    var answer = false;
-    if (document.getElementById(id).value === '') {
-        document.getElementById(id).classList.add("error");
-    } else {
-        document.getElementById(id).classList.remove("error");
-        answer = true;
+
+    var answer = true;
+    ids = (typeof ids === 'string') ? [ids] : ids;
+    for (var j = 0; j < ids.length; j++) {
+        console.log(id, id);
+        var id = ids[j];
+        if (document.getElementById(id).value === '') {
+            document.getElementById(id).classList.add("error");
+            answer = false;
+        } else {
+            document.getElementById(id).classList.remove("error");
+        }
     }
 
-    return answer;
+    return ids.length && answer;
 }
 //
 // Page.getUsersFromRating = function (query) {
