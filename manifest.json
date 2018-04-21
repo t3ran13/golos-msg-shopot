@@ -1,0 +1,29 @@
+{
+    "manifest_version": 2,
+ 
+    "name": "Golos Shopot",
+    "version": "1.0.0",    
+    "icons": {
+            "16": "images/golos_16.png",
+            "32": "images/golos_32.png",
+            "48": "images/golos_48.png",
+            "64": "images/golos_64.png",
+            "128": "images/golos_128.png"
+    },
+
+    "permissions": [
+		"http://*",
+		"wss://*"
+	],
+    "browser_action": {
+          "default_icon": {
+            "16": "images/golos_16.png",
+            "32": "images/golos_32.png",
+            "48": "images/golos_48.png",
+            "64": "images/golos_64.png",
+            "128": "images/golos_128.png"
+          },
+          "default_title": "Shopot",
+          "default_popup": "popup.html"
+    }
+}

@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Rating Reward</title>
+    <script src="golos.min.0.6.2.js"></script>
+    <script src="popup.js"></script>
+    <!--<script src="https://cdn.steemjs.com/lib/latest/steem.min.js"></script>-->
+</head>
+<body>
+<style type='text/css'>
+</style>
+<div id="page">
+    <div id="form">
+        <table id="table-with-settings">
+            <caption>
+                <h1>Shopot</h1>
+                <h2>Зашифрованные сообщения GOLOS</h2>
+            </caption>
+            <!--<tr>-->
+                <!--<td class="title">Блокчейн/ Blockchain</td>-->
+                <!--<td>-->
+                    <!--<input type="radio" onclick="Page.changePlatform();" name="platform" checked="checked" value="golos"> Golos-->
+                    <!--<input type="radio" onclick="Page.changePlatform();" name="platform" value="steem"> Steem-->
+                <!--</td>-->
+            <!--</tr>-->
+            <tr>
+                <td class="title">Ваш ник</td>
+                <td>
+                    <input type="text" class="form-data" id="msg-from">
+                    <input id="btn-show-balance" type="submit" class="submit-data" value="Показать баланс">
+                    <span id="payer-balance"></span>
+                </td>
+            </tr>
+            <tr>
+                <td class="title">Активный приватный ключ</td>
+                <td>
+                    <input type="password" class="form-data" id="active-private-key" style="width: 30px;">
+                </td>
+            </tr>
+            <tr>
+                <td class="title">Приватный ключ заметок</td>
+                <td>
+                    <input type="password" class="form-data" id="memo-private-key" style="width: 30px;">
+                </td>
+            </tr>
+            <tr>
+                <td class="title" valign="top">Стоимость</td>
+                <td>
+                    0.001
+                    <input type="radio" name="msg-token" value="GBG" checked="checked">GBG
+                    <input type="radio" name="msg-token" value="GOLOS">GOLOS
+                    &nbsp
+                    <!--<select onchange="Page.changeMoneyDistribution();" id="payer-amount-kind">-->
+                        <!--<option value="GOLOS">GOLOS (ГОЛОС)</option>-->
+                        <!--<option value="GBG">GBG (ЗОЛОТОЙ)</option>-->
+                        <!--<option value="STEEM">STEEM</option>-->
+                        <!--<option value="SBD">SBD ($)</option>-->
+                    <!--</select>-->
+                    <!--<br>-->
+                    <!--<input type="radio" onchange="Page.changeMoneyDistribution();" name="payer-money-distribution" checked="checked" value="each"> Каждому/ Each-->
+                    <!--<input type="radio" onchange="Page.changeMoneyDistribution();" name="payer-money-distribution" value="all"> На всех/ Tatal-->
+                </td>
+            </tr>
+            <tr>
+                <td class="title">Кому</td>
+                <td>
+                    <input type="text" class="form-data" id="msg-to" value="Ваше сообщение">
+                </td>
+            </tr>
+            <tr>
+                <td class="title">Сообщение</td>
+                <td>
+                    <input type="text" class="form-data" id="msg" value="Ваше сообщение">
+                </td>
+            </tr>
+            <tr>
+                <td></td>
+                <td>
+                    <input type="submit" class="submit-data" value="Отправить" onclick="">
+                </td>
+            </tr>
+            <tr>
+                <td>История</td>
+                <td>
+                    за <input type="radio" name="history-interval" value="24h" checked="checked">24 часа
+                    <input type="radio" name="history-interval" value="1week">неделю
+                    <input type="radio" name="history-interval" value="1month">месяц
+                    <input id="btn-show-msg-history" type="submit" class="submit-data" value="Показать" onclick="">
+                </td>
+            </tr>
+        </table>
+    </div>
+    <div id="users-list">
+    </div>
+</div>
+</body>
+</html>
