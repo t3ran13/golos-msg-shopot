@@ -140,6 +140,7 @@ Page.getAccountMsgHistoryByPart = function (user, from, limit, list, until_date)
         }
 
         var isStop = false;
+        result.reverse();
         for (var j = 0; j < result.length; j++) {
             if (
                 result[j][1]['op'][0] === 'transfer'
@@ -200,7 +201,7 @@ Page.showChatOfUser = function(user) {
     var owner = document.getElementById('msg-from').value;
     var chat = '';
     var keys = Object.keys(list[user]);
-    // keys.reverse();
+    keys.reverse();
     console.log('showChatOfUser', keys);
     console.log('showChatOfUser', list[user]);
     var memoPrivateKey = document.getElementById('memo-private-key').value;
@@ -268,6 +269,7 @@ Page.sendMsg = function() {
         var fromUser = document.getElementById('msg-from').value;
         var toUser = document.getElementById('msg-to').value;
         var memo = '#' + document.getElementById("msg").value;
+        Page.insertHTMLById('error-info', 'отправка сообщения...');
 
         Page.getApi().api.getAccounts([toUser], function (sendError, sendResult)
         {
@@ -297,6 +299,7 @@ Page.sendMsg = function() {
                 }
                 else {
                     Page.setTextValue('msg', '');
+                    Page.insertHTMLById('error-info', 'сообщение отправлено');
                 }
             });
         });
