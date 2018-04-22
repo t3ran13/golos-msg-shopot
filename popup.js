@@ -44,6 +44,13 @@ Page.insertHTMLById = function(id, html) {
     msgWindow.innerHTML = html;
 }
 
+Page.setTextValue = function(id, value) {
+    console.log('setTextValue', id);
+
+
+    document.getElementById(id).value = value;
+}
+
 // Page.setUsersAskedReward = function(list) {
 //     console.log('setUsersAskedReward');
 //
@@ -205,7 +212,8 @@ Page.showChatOfUser = function(user) {
             cl = 'out';
         }
         var msg = Page.getApi().memo.decode(memoPrivateKey, list[user][key]['op'][1]['memo']);
-        chat += '<div class="msg-window-chat-' + cl + '">' + msg + '<hr></div> ';
+        msg = msg.substring(1);
+        chat += '<div class="msg-window-chat-' + cl + '">' + msg + '</div> ';
     }
 
     Page.insertHTMLById('msg-window-chat', chat);
@@ -233,7 +241,9 @@ Page.showChatsWithUsers = function() {
 Page.CheckUserTo = function(e) {
     console.log('CheckUserTo', e.target.dataset.user);
 
-    Page.showChatOfUser(e.target.dataset.user);
+    var user = e.target.dataset.user;
+    Page.showChatOfUser(user);
+    Page.setTextValue('msg-to', user);
 }
 
 Page.addListenerstToUsersFromChat = function() {
@@ -285,7 +295,7 @@ Page.sendMsg = function() {
                     Page.insertHTMLById('error-info', sendError.message);
                 }
                 else {
-                    Page.insertHTMLById('msg', '');
+                    Page.setTextValue('msg', '');
                 }
             });
         });
