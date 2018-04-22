@@ -106,6 +106,7 @@ Page.getAccountMsgHistory = function() {
         until_date.setHours(until_date.getHours() - parseInt(interval, 10));
 
         Page.insertHTMLById('msg-window-users-list', '~');
+        Page.insertHTMLById('msg-window-chat', '');
 
         Page.getApi().api.getAccountHistory(user, -1, 0, function(err, result) {
             console.log('getAccountHistory',user);
@@ -330,6 +331,12 @@ document.addEventListener('DOMContentLoaded', function() {
     Page.changePlatform();
     Page.setMsgListByAuthors({});
     Page.addListenerstToUsersFromChat();
+
+    document.getElementById('msg-from').addEventListener('change', function() {
+        Page.showPayerBalance();
+        Page.setMsgListByAuthors({});
+        Page.getAccountMsgHistory();
+    }, false);
 
     document.getElementById('btn-show-balance').addEventListener('click', function() {
         Page.showPayerBalance();
