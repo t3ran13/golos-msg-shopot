@@ -12,6 +12,7 @@ Page.setApi = function(platform) {
 
     if (platform === 'golos') {
         api = golos;
+        api.config.set('websocket','wss://ws17.golos.blog');
     } else {
         api = steem;
         steem.api.setOptions({ url: 'https://api.steemit.com' });
@@ -122,7 +123,7 @@ Page.getAccountMsgHistory = function() {
             limit = limit > total ? total : limit;
 
             console.log('total', total);
-
+            console.log('listStart', Page.getMsgListByAuthors());
             Page.getAccountMsgHistoryByPart(user, total, limit, Page.getMsgListByAuthors(), until_date);
         });
     }
@@ -141,6 +142,7 @@ Page.getAccountMsgHistoryByPart = function (user, from, limit, list, until_date)
 
         var isStop = false;
         result.reverse();
+        // console.log('result', result);
         for (var j = 0; j < result.length; j++) {
             if (
                 result[j][1]['op'][0] === 'transfer'
@@ -153,9 +155,12 @@ Page.getAccountMsgHistoryByPart = function (user, from, limit, list, until_date)
                 } else {
                     msgUser = result[j][1]['op'][1]['to'];
                 }
-                if(typeof list.msgUser === 'undefined'){
+                if(typeof list[msgUser] === 'undefined'){
                     list[msgUser] = {};
+                    // console.log('clear user', msgUser);
                 }
+                // console.log('j', j);
+                // console.log('trx_id', result[j][1]['trx_id']);
                 list[msgUser][result[j][1]['trx_id']] = result[j][1];
             } else if (new Date(result[j][1]['timestamp']) < until_date) {
                 isStop = true;
@@ -171,7 +176,7 @@ Page.getAccountMsgHistoryByPart = function (user, from, limit, list, until_date)
         } else {
             var users = Object.keys(list);
             Page.insertHTMLById('msg-window-users-list', 'found conversations '  + users.length + ' ~');
-            console.log('list', list);
+            console.log('listEnd', list);
             // Page.initChatWindow();
             if (users.length) {
                 Page.showChatsWithUsers();
@@ -179,8 +184,8 @@ Page.getAccountMsgHistoryByPart = function (user, from, limit, list, until_date)
             }
 
             //save to storage
-            var data = {'msgListByAuthors': Page.getMsgListByAuthors()};
-            Page.storageSave(data);
+            // var data = {'msgListByAuthors': Page.getMsgListByAuthors()};
+            // Page.storageSave(data);
         }
     });
 }
@@ -340,17 +345,18 @@ Page.validateIsNotEmpty = function(ids) {
 Page.loadDataFromStorage = function() {
     console.log('loadDataFromStorage');
 
+    var listMsg = {};
     if (typeof chrome !== 'undefined') {
         var keys = ['msg-from','msgListByAuthors'];
 
         chrome.storage.local.get(keys, function (result) {
             console.log('loadDataFromStorage', result);
             if (typeof result === 'object') {
-                var listMsg = {};
                 if (typeof result.msgListByAuthors !== 'undefined') {
                     listMsg = (result.msgListByAuthors.constructor === Object
                         && Object.keys(result.msgListByAuthors).length !== 0)
                         ? result.msgListByAuthors : {};
+                    listMsg = JSON.parse(JSON.stringify(listMsg));
                 }
                 Page.setMsgListByAuthors(listMsg);
 
@@ -359,6 +365,8 @@ Page.loadDataFromStorage = function() {
                 }
             }
         });
+    } else {
+        Page.setMsgListByAuthors(listMsg);
     }
 }
 
