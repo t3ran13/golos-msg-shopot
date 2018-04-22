@@ -2,7 +2,7 @@ function Page() {
     var api = null;
     var rewardPerUser = null;
     var UsersAskedReward = null;
-    var msgListByAuthors = [];
+    var msgListByAuthors = {};
 }
 
 var Page = new Page();
@@ -92,7 +92,7 @@ Page.getAccountMsgHistory = function() {
     console.log('getAccountMsgHistory');
     var limit = 1000;
 
-    if (Page.validateIsNotEmpty('msg-from')) {
+    if (Page.validateIsNotEmpty(['msg-from', 'memo-private-key'])) {
         var user = document.getElementById('msg-from').value;
         var interval = document.querySelector('input[name="history-interval"]:checked').value;
         var until_date = new Date();
@@ -132,10 +132,13 @@ Page.getAccountMsgHistoryByPart = function (user, from, limit, list, until_date)
         }
 
         var isStop = false;
-        result.reverse();
-        console.log('result.length', result.length);
         for (var j = 0; j < result.length; j++) {
-            if (result[j][1]['op'][0] === 'transfer' && new Date(result[j][1]['timestamp']) >= until_date) {
+            console.log('j', j);
+            if (
+                result[j][1]['op'][0] === 'transfer'
+                && new Date(result[j][1]['timestamp']) >= until_date
+                && result[j][1]['op'][1]['memo'].substring(0,1) === '#'
+            ) {
                 var msgUser = null;
                 if (result[j][1]['op'][1]['from'] !== user) {
                     msgUser = result[j][1]['op'][1]['from'];
@@ -143,12 +146,11 @@ Page.getAccountMsgHistoryByPart = function (user, from, limit, list, until_date)
                     msgUser = result[j][1]['op'][1]['to'];
                 }
                 if(!list.hasOwnProperty(msgUser)){
-                    list[msgUser] = [];
+                    list[msgUser] = {};
                 }
-                list[msgUser].push(result[j][1]);
+                list[msgUser][result[j][1]['trx_id']] = result[j][1];
             } else if (new Date(result[j][1]['timestamp']) < until_date) {
                 isStop = true;
-                break;
             }
         }
 
@@ -190,15 +192,20 @@ Page.showChatOfUser = function(user) {
     var list = Page.getMsgListByAuthors();
     var owner = document.getElementById('msg-from').value;
     var chat = '';
-    list[user].reverse();
-    for (var j = 0; j < list[user].length; j++) {
+    var keys = Object.keys(list[user]);
+    // keys.reverse();
+    console.log('showChatOfUser', keys);
+    console.log('showChatOfUser', list[user]);
+    var memoPrivateKey = document.getElementById('memo-private-key').value;
+    for (var j = 0; j < keys.length; j++) {
         var cl = '';
-        if (list[user][j]['op'][1]['from'] !== owner) {
+        var key = keys[j];
+        if (list[user][key]['op'][1]['from'] !== owner) {
             cl = 'in';
         } else {
             cl = 'out';
         }
-        var msg = list[user][j]['op'][1]['memo'] === '' ? '(empty)' : list[user][j]['op'][1]['memo'];
+        var msg = Page.getApi().memo.decode(memoPrivateKey, list[user][key]['op'][1]['memo']);
         chat += '<div class="msg-window-chat-' + cl + '">' + msg + '<hr></div> ';
     }
 
@@ -217,7 +224,7 @@ Page.showChatsWithUsers = function() {
 
         for (var j = 0; j < users.length; j++) {
             var userName = users[j];
-            html += '<br><span class="msg-window-user" data-user="' + userName + '">' + userName + ' (' + list[userName].length + ')' + '</span> ';
+            html += '<br><span class="msg-window-user" data-user="' + userName + '">' + userName + ' (' + Object.keys(list[userName]).length + ')' + '</span> ';
         }
 
         Page.insertHTMLById('msg-window-users-list', html);
@@ -312,7 +319,7 @@ Page.validateIsNotEmpty = function(ids) {
 console.log('changePlatform');
 document.addEventListener('DOMContentLoaded', function() {
     Page.changePlatform();
-    Page.setMsgListByAuthors([]);
+    Page.setMsgListByAuthors({});
     Page.addListenerstToUsersFromChat();
 
     document.getElementById('btn-show-balance').addEventListener('click', function() {
