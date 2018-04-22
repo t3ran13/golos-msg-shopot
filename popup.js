@@ -133,7 +133,6 @@ Page.getAccountMsgHistoryByPart = function (user, from, limit, list, until_date)
 
         var isStop = false;
         for (var j = 0; j < result.length; j++) {
-            console.log('j', j);
             if (
                 result[j][1]['op'][0] === 'transfer'
                 && new Date(result[j][1]['timestamp']) >= until_date
