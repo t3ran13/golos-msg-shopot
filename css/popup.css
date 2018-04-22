@@ -5,7 +5,6 @@
 #form .msg-window-chat-in,
 #form .msg-window-chat-out
 {
-    width: 100%;
     margin-top: 3px;
     margin-bottom: 3px;
     border-radius: 5px;
@@ -19,7 +18,7 @@
 }
 #form .msg-window-chat-out
 {
-    margin-left: 20px;
+    margin-left: 30px;
     padding-right: 5px;
     text-align: right;
     background-color: aliceblue;
@@ -27,7 +26,7 @@
 #msg-window td
 {
     max-height: 100px;
-    overflow: auto;
+    overflow-y: auto;
 }
 .msg-window-user
 {
