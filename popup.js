@@ -153,7 +153,7 @@ Page.getAccountMsgHistoryByPart = function (user, from, limit, list, until_date)
                 } else {
                     msgUser = result[j][1]['op'][1]['to'];
                 }
-                if(!list.hasOwnProperty(msgUser)){
+                if(typeof list.msgUser === 'undefined'){
                     list[msgUser] = {};
                 }
                 list[msgUser][result[j][1]['trx_id']] = result[j][1];
@@ -177,6 +177,10 @@ Page.getAccountMsgHistoryByPart = function (user, from, limit, list, until_date)
                 Page.showChatsWithUsers();
                 Page.showChatOfUser(users[0]);
             }
+
+            //save to storage
+            var data = {'msgListByAuthors': Page.getMsgListByAuthors()};
+            Page.storageSave(data);
         }
     });
 }
@@ -328,17 +332,59 @@ Page.validateIsNotEmpty = function(ids) {
     return ids.length && answer;
 }
 
+/**
+ *
+ * @param array keys
+ * @returns {*}
+ */
+Page.loadDataFromStorage = function() {
+    console.log('loadDataFromStorage');
+
+    if (typeof chrome !== 'undefined') {
+        var keys = ['msg-from','msgListByAuthors'];
+
+        chrome.storage.local.get(keys, function (result) {
+            console.log('loadDataFromStorage', result);
+            if (typeof result === 'object') {
+                var listMsg = {};
+                if (typeof result.msgListByAuthors !== 'undefined') {
+                    listMsg = (result.msgListByAuthors.constructor === Object
+                        && Object.keys(result.msgListByAuthors).length !== 0)
+                        ? result.msgListByAuthors : {};
+                }
+                Page.setMsgListByAuthors(listMsg);
+
+                if (typeof result['msg-from'] === 'string') {
+                    Page.setTextValue('msg-from', result['msg-from']);
+                }
+            }
+        });
+    }
+}
+
+Page.storageSave = function(obj) {
+    console.log('storageSave');
+    if (typeof chrome !== 'undefined') {
+        chrome.storage.local.set(obj, function() {
+            console.log('Chrome storage got ', obj);
+        });
+    }
+}
 
 console.log('changePlatform');
 document.addEventListener('DOMContentLoaded', function() {
+    Page.loadDataFromStorage();
     Page.changePlatform();
-    Page.setMsgListByAuthors({});
     Page.addListenerstToUsersFromChat();
 
     document.getElementById('msg-from').addEventListener('change', function() {
         Page.showPayerBalance();
         Page.setMsgListByAuthors({});
         Page.getAccountMsgHistory();
+
+        var fromUser = document.getElementById('msg-from').value;
+        var data = {'msg-from': fromUser};
+        Page.storageSave(data);
     }, false);
 
     document.getElementById('btn-show-balance').addEventListener('click', function() {
