@@ -4,9 +4,8 @@
     <meta charset="UTF-8">
     <title>Rating Reward</title>
     <link rel="stylesheet" type="text/css" href="css/popup.css">
-    <script src="golos.min.0.6.2.js"></script>
+    <script src="golos.min.js"></script>
     <script src="popup.js"></script>
-    <!--<script src="https://cdn.steemjs.com/lib/latest/steem.min.js"></script>-->
 </head>
 <body>
 <style type='text/css'>
@@ -36,13 +35,13 @@
             <tr>
                 <td class="title">Активный приватный ключ</td>
                 <td>
-                    <input type="password" class="form-data" id="active-private-key" style="width: 30px;">
+                    <input type="text" class="form-data" id="active-private-key" style="width: 30px;">
                 </td>
             </tr>
             <tr>
                 <td class="title">Приватный ключ заметок</td>
                 <td>
-                    <input type="password" class="form-data" id="memo-private-key" style="width: 30px;">
+                    <input type="text" class="form-data" id="memo-private-key" style="width: 30px;">
                 </td>
             </tr>
             <tr>
@@ -89,6 +88,11 @@
                     <input type="radio" name="history-interval" value="154">неделю
                     <input type="radio" name="history-interval" value="720">месяц
                     <input id="btn-show-msg-history" type="submit" class="submit-data" value="Показать" onclick="">
+                </td>
+            </tr>
+            <tr>
+                <td></td>
+                <td id="error-info">
                 </td>
             </tr>
         </table>
