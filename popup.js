@@ -106,7 +106,7 @@ Page.getAccountMsgHistory = function() {
         var until_date = new Date();
         until_date.setHours(until_date.getHours() - parseInt(interval, 10));
 
-        Page.insertHTMLById('msg-window-users-list', '~');
+        Page.insertHTMLById('msg-window-users-list', 'поск сообщений...');
         Page.insertHTMLById('msg-window-chat', '');
 
         Page.getApi().api.getAccountHistory(user, -1, 0, function(err, result) {
@@ -141,7 +141,7 @@ Page.getAccountMsgHistoryByPart = function (user, from, limit, list, until_date)
         }
 
         var isStop = false;
-        result.reverse();
+        // result.reverse();
         // console.log('result', result);
         for (var j = 0; j < result.length; j++) {
             if (
@@ -171,19 +171,19 @@ Page.getAccountMsgHistoryByPart = function (user, from, limit, list, until_date)
         limit = limit > from ? from : limit;
 
         if (!isStop && from > 0) {
-            Page.insertHTMLById('msg-window-users-list', 'found conversations '  + Object.keys(list).length + ' ~');
+            Page.insertHTMLById('msg-window-users-list', 'найдено диалогов '  + Object.keys(list).length + ', ищем дальше...');
             Page.getAccountMsgHistoryByPart(user, from - limit, limit, list, until_date);
         } else {
             var users = Object.keys(list);
-            Page.insertHTMLById('msg-window-users-list', 'found conversations '  + users.length + ' ~');
+            Page.insertHTMLById('msg-window-users-list', 'найдено диалогов '  + users.length + ' ~');
             console.log('listEnd', list);
             // Page.initChatWindow();
             if (users.length) {
                 Page.showChatsWithUsers();
-                Page.showChatOfUser(users[0]);
+                Page.showChatOfUser(users[users.length-1]);
             }
 
-            //save to storage
+            // save to storage
             // var data = {'msgListByAuthors': Page.getMsgListByAuthors()};
             // Page.storageSave(data);
         }
@@ -210,7 +210,7 @@ Page.showChatOfUser = function(user) {
     var owner = document.getElementById('msg-from').value;
     var chat = '';
     var keys = Object.keys(list[user]);
-    keys.reverse();
+    // keys.reverse();
     console.log('showChatOfUser', keys);
     console.log('showChatOfUser', list[user]);
     var memoPrivateKey = document.getElementById('memo-private-key').value;
@@ -237,6 +237,7 @@ Page.showChatsWithUsers = function() {
     var list = Page.getMsgListByAuthors();
 
     var users = Object.keys(list);
+    users.reverse();
     var html = '';
     if (users.length) {
 
