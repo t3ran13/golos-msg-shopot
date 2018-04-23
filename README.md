@@ -7,4 +7,5 @@
 для использования потребуются мемо и активный приватные ключи
 
 
-### Реализован за 48 часов в рамках Imaguru Blockchain Hackathon 20-22 апреля
+### Реализован за 48 часов в рамках Imaguru Blockchain Hackathon 20-22 апреля 
+авторы [@t3ran13](golos.io/@t3ran13), [@alextsvirko](golos.io/@alextsvirko)
