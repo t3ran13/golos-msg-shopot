@@ -8,4 +8,4 @@
 
 
 ### Реализован за 48 часов в рамках Imaguru Blockchain Hackathon 20-22 апреля 
-авторы [@t3ran13](golos.io/@t3ran13), [@alextsvirko](golos.io/@alextsvirko), [@amunra](golos.io/@amunra)
+авторы [@t3ran13](http://golos.io/@t3ran13), [@alextsvirko](http://golos.io/@alextsvirko), [@amunra](http://golos.io/@amunra)
