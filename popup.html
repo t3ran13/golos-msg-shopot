@@ -27,7 +27,7 @@
             <tr>
                 <td class="title">Ваш ник</td>
                 <td>
-                    <input id="msg-from" type="text" class="form-data">
+                    <input id="msg-from" type="text" class="form-data" placeholder="ник на голосе">
                     <input id="btn-show-balance" type="submit" class="submit-data" value="Показать баланс">
                     <span id="payer-balance"></span>
                 </td>
@@ -35,15 +35,15 @@
             <tr>
                 <td class="title">Активный ключ</td>
                 <td>
-                    <input type="password" class="form-data" id="active-private-key" style="width: 30px;">
+                    <input type="password" class="form-data" id="active-private-key" placeholder="приватный активный ключ">
                 </td>
             </tr>
             <tr>
                 <td class="title">Ключ заметок</td>
                 <td>
-                    <input type="text" class="form-data" id="memo-private-key" style="width: 30px;">
+                    <input type="password" class="form-data" id="memo-private-key" placeholder="мемо приватный ключ">
                 </td>
-            </tr>
+              </tr>
             <tr>
                 <td class="title" valign="top">Стоимость</td>
                 <td>
@@ -74,10 +74,10 @@
             <tr>
                 <td></td>
                 <td id="msg-window">
-                    <table width="450px">
+                    <table>
                         <tr>
-                            <td id="msg-window-users-list" valign="top"></td>
-                            <td id="msg-window-chat" width="350px" valign="bottom"></td>
+                            <td id="msg-window-users-list" valign="middle"></td>
+                            <td id="msg-window-chat" valign="bottom"></td>
                         </tr>
                     </table>
                 </td>
@@ -85,8 +85,8 @@
             <tr>
                 <td></td>
                 <td>
-                    <input type="text" class="form-data" id="msg-to" placeholder="Имя пользователя">
-                    <input type="text" class="form-data" id="msg" placeholder="Сообщение">
+                    <input type="text" class="form-data" id="msg-to" placeholder="Имя пользователя"> <br/><br/>
+                    <textarea type="text" class="form-data" id="msg" placeholder="Сообщение"></textarea>
                     <input id="btn-send" type="submit" class="submit-data" value="Отправить" onclick="">
                 </td>
             </tr>

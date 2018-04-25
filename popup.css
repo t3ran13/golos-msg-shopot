@@ -1,0 +1,102 @@
+#form .error
+{
+    border: 2px solid grey;
+}
+#form .msg-window-chat-in,
+#form .msg-window-chat-out
+{
+    margin-top: 3px;
+    margin-bottom: 3px;
+    border-radius: 5px;
+}
+#form .msg-window-chat-in
+{
+    margin-right: 30px;
+    padding-left: 5px;
+    text-align: left;
+    background-color: beige;
+}
+#form .msg-window-chat-out
+{
+    margin-left: 30px;
+    padding-right: 5px;
+    text-align: right;
+    background-color: aliceblue;
+}
+#msg-window td
+{
+    max-height: 100px;
+    overflow-y: auto;
+}
+.msg-window-user
+{
+    cursor: pointer;
+}
+#memo-private-key
+{
+  border: 2px solid silver;
+  width: 600px;
+  height: 25px;
+  border-radius: 8px;
+  background-color: #8DF7D8;
+}
+#active-private-key
+{
+  border: 2px solid silver;
+  width: 600px;
+  height: 25px;
+  border-radius: 8px;
+  background-color: #8DF7D8;
+}
+#msg
+{
+  border: 2px solid silver;
+  width: 600px;
+  height: 100px;
+  border-radius: 8px;
+  background-color: #8DF7D8;
+
+}
+#msg-to
+{
+  border: 2px solid silver;
+  width: 600px;
+  height: 27px;
+  border-radius: 8px;
+  background-color: #8DF7D8;
+}
+#msg-from
+{
+  border: 2px solid silver;
+  width: 200px;
+  height: 25px;
+  border-radius: 8px;
+  background-color: #8DF7D8;
+}
+#msg-window-users-list
+{
+  width: 200px;
+  background-color: #2B2EEE;
+  border: 2px solid silver;
+  border-radius: 10px;
+}
+#msg-window-chat
+{
+  width: 387px;
+  background-color: #2B2EEE;
+  border: 3px solid silver;
+  border-radius: 10px;
+}
+body
+{
+  margin-left: 500px;
+  margin-right: 100px;
+  margin-top: 110px;
+  margin-bottom: 300px;
+
+}
+body
+{
+  background-image: url(https://cdn.pixabay.com/photo/2018/03/31/05/06/blockchain-3277335_960_720.png);
+  background-size: 100%;
+}
