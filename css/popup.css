@@ -79,3 +79,7 @@
     margin-left: auto;
     margin-right: auto;
 }
+#table-with-settings td:first-child{
+    font-weight: bold;
+    color: #8e9194;
+}
